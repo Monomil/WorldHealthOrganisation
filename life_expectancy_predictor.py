@@ -59,9 +59,9 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 
-# --------------------------------------------------------------------------
+
 # Artifact loading (cached at module level so repeated calls are cheap)
-# --------------------------------------------------------------------------
+
 
 _MODELS: Optional[dict] = None
 _ARTIFACTS: Optional[dict] = None
