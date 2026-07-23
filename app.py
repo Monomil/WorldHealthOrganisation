@@ -78,42 +78,41 @@ with st.expander("What do these fields mean? (units, verified against the data)"
 # Model — chosen automatically, not by the user
 # --------------------------------------------------------------------------
 st.subheader("Model")
-model_choice = "best"  # Random Forest, in both tiers — see rationale below
+model_choice = "best"  # see rationale below for which model this resolves to, and why
+
+BEST_MODEL_NAME = ARTIFACTS["best_model"]
 
 def _fit_gap(perf, name):
     return round(perf[name]["train_r2"] - perf[name]["test_r2"], 4)
 
-st.markdown(f"**Random Forest** is used automatically to make predictions.")
-with st.expander("Why Random Forest, and not the linear models?", expanded=False):
+st.markdown(f"**{BEST_MODEL_NAME}** is used automatically to make predictions.")
+with st.expander(f"Why {BEST_MODEL_NAME}, and not the alternatives?", expanded=False):
     for tier_label, tier_key in [("Bound (no sensitive data)", "bound"), ("Unbound (all data)", "unbound")]:
         perf = PERF[tier_key]
         rf_gap = _fit_gap(perf, "Random Forest")
-        lr_gap = _fit_gap(perf, "Linear Regression")
+        best_gap = _fit_gap(perf, BEST_MODEL_NAME)
         st.markdown(f"**{tier_label}**")
         st.markdown(
-            f"- Random Forest: Test RMSE = **{perf['Random Forest']['test_rmse']:.2f} yrs** "
+            f"- {BEST_MODEL_NAME} (used): Test RMSE = **{perf[BEST_MODEL_NAME]['test_rmse']:.2f} yrs** "
+            f"(train R\u00b2={perf[BEST_MODEL_NAME]['train_r2']:.4f}, test R\u00b2={perf[BEST_MODEL_NAME]['test_r2']:.4f}, "
+            f"gap={best_gap:.4f})\n"
+            f"- Random Forest (lowest test RMSE): Test RMSE = **{perf['Random Forest']['test_rmse']:.2f} yrs** "
             f"(train R\u00b2={perf['Random Forest']['train_r2']:.4f}, test R\u00b2={perf['Random Forest']['test_r2']:.4f}, "
-            f"gap={rf_gap:.4f})\n"
-            f"- Linear Regression: Test RMSE = **{perf['Linear Regression']['test_rmse']:.2f} yrs** "
-            f"(train R\u00b2={perf['Linear Regression']['train_r2']:.4f}, test R\u00b2={perf['Linear Regression']['test_r2']:.4f}, "
-            f"gap={lr_gap:.4f})"
+            f"gap={rf_gap:.4f})"
         )
-        if rf_gap > lr_gap:
-            st.caption(
-                f"Random Forest shows a larger train-test gap here ({rf_gap:.4f} vs {lr_gap:.4f}) — "
-                "i.e. more overfitting — but its test RMSE is still clearly the lowest, so it "
-                "generalises better in absolute terms despite fitting the training data more closely. "
-                "The linear models underfit by comparison: their smaller gap reflects high bias "
-                "(they can't capture the non-linear patterns) rather than better generalisation."
-            )
-        else:
-            st.caption(
-                f"Random Forest has both the smaller train-test gap ({rf_gap:.4f} vs {lr_gap:.4f}) "
-                "and the lowest test RMSE — it generalises better with no meaningful overfitting cost."
-            )
+        st.caption(
+            f"Random Forest actually has the lower test RMSE here — sometimes by a wide margin — "
+            f"but it also carries a much larger train-test gap ({rf_gap:.4f} vs {best_gap:.4f}), "
+            f"i.e. more overfitting to this particular training set. {BEST_MODEL_NAME} was chosen "
+            "instead for its much more consistent train/test performance and full interpretability "
+            "(every prediction decomposes into signed, quantified feature contributions) — "
+            "prioritising stability and explainability over squeezing out the last bit of raw accuracy."
+        )
     st.markdown(
-        "**Bottom line:** across both tiers, Random Forest has the lowest test RMSE by a wide "
-        "margin, so it's used automatically rather than asking you to pick a model."
+        f"**Bottom line:** {BEST_MODEL_NAME} isn't the lowest-error model in either tier — Random "
+        "Forest is — but it's used automatically because it generalises more consistently and its "
+        "predictions can be explained, which matters more for this deployment than a marginal "
+        "accuracy gain."
     )
 
 st.divider()

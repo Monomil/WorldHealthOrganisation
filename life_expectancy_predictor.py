@@ -25,8 +25,17 @@ degrading or fabricating missing values.
 
 Within whichever consent tier is selected, the user can also choose
 between:
-  * "best"    -> Random Forest (lowest test RMSE in both tiers)
-  * "minimal" -> Linear Regression (simplest, most interpretable model)
+  * "best"    -> Linear Regression, in both tiers. NOTE: Random Forest
+                 actually has the lowest test RMSE in both tiers, but it
+                 also has a substantially larger train-test gap (more
+                 overfitting) than the linear models. Linear Regression was
+                 chosen as "best" instead for its much more consistent
+                 train/test performance and full interpretability, trading
+                 a bit of raw accuracy for stability and explainability.
+                 See `artifacts["performance"]` for the full comparison.
+  * "minimal" -> Linear Regression (simplest, most interpretable model;
+                 currently identical to "best" -- both map to the same
+                 model in this configuration)
 
 WHY THIS FILE ALSO SHIPS PREPROCESSING ARTIFACTS
 -------------------------------------------------
