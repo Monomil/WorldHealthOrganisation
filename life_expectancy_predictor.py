@@ -68,9 +68,9 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 
-# --------------------------------------------------------------------------
+
 # Artifact loading (cached at module level so repeated calls are cheap)
-# --------------------------------------------------------------------------
+
 
 _MODELS: Optional[dict] = None
 _ARTIFACTS: Optional[dict] = None
@@ -106,8 +106,8 @@ CONSENT_PROMPT = ("Do you consent to using advanced population data, which may "
 
 # Field descriptions, verified against the actual data ranges in
 # Life_Expectancy_Data.csv (the "Life Expectancy (WHO) Fixed" / lashagoch
-# updated dataset, 2,864 rows). NOTE: this updated dataset redefines some
-# columns compared to the original/classic WHO Kaggle dataset -- most
+# updated dataset, 2,864 rows). This updated dataset redefines some
+# columns compared to the original/classic WHO Kaggle dataset - most
 # notably Measles, which here is a 0-99 immunization coverage percentage
 # (MCV1 dose coverage among 1-year-olds), NOT a raw case count per 1,000
 # population as in the older dataset. Verified: df["Measles"] ranges 10-99

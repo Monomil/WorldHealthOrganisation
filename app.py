@@ -31,9 +31,9 @@ st.caption(
     "levels of data sensitivity."
 )
 
-# --------------------------------------------------------------------------
+
 # Consent (ethical gate)
-# --------------------------------------------------------------------------
+
 st.subheader("Data consent")
 st.write(
     "Do you consent to using **advanced population data, which may include "
@@ -74,9 +74,9 @@ with st.expander("What do these fields mean? (units, verified against the data)"
     for field, desc in FEATURE_DESCRIPTIONS.items():
         st.markdown(f"- **{field}**: {desc}")
 
-# --------------------------------------------------------------------------
+
 # Model — chosen automatically, not by the user
-# --------------------------------------------------------------------------
+
 st.subheader("Model")
 model_choice = "best"  # see rationale below for which model this resolves to, and why
 
@@ -117,9 +117,9 @@ with st.expander(f"Why {BEST_MODEL_NAME}, and not the alternatives?", expanded=F
 
 st.divider()
 
-# --------------------------------------------------------------------------
+
 # Core (always required) inputs
-# --------------------------------------------------------------------------
+
 st.subheader("Core population statistics")
 col1, col2 = st.columns(2)
 with col1:
@@ -143,9 +143,9 @@ with col2:
         value=float(BOUND_STATS["schooling"]["median"]), step=0.1,
     )
 
-# --------------------------------------------------------------------------
+
 # Sensitive inputs — only shown/used if consent given
-# --------------------------------------------------------------------------
+
 sensitive_kwargs = {}
 if consent == "Y":
     st.subheader("Additional health statistics (sensitive)")
@@ -189,9 +189,9 @@ if consent == "Y":
 
 st.divider()
 
-# --------------------------------------------------------------------------
+
 # Predict
-# --------------------------------------------------------------------------
+
 if st.button("Predict life expectancy", type="primary", use_container_width=True):
     result = predict_life_expectancy(
         consent=consent,
